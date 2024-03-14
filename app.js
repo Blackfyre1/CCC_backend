@@ -4,13 +4,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const User = require('./models/user');
 const Location = require('./models/location');
-
+const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://root:zjHySItuqYWS0c9i@kumbh.igzzpuu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
@@ -23,6 +24,13 @@ mongoose.connect('mongodb+srv://root:zjHySItuqYWS0c9i@kumbh.igzzpuu.mongodb.net/
 });
 
 // Registration
+app.get('/',(req,res)=>{
+res.send(`<html>
+<body>
+TESTING
+</body>
+</html>`)
+})
 app.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -40,6 +48,7 @@ app.post('/login', async (req, res) => {
   try {
     const { email, password} = req.body;
     const user = await User.findOne({ email, password });
+    console.log(email);
     if (user) {
       res.status(200).json({ message: "Login successful" });
     } else {
