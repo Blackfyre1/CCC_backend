@@ -111,6 +111,15 @@ app.post('/updateLocation', async (req, res) => {
   }
 });
 
+app.get('/allLocation',async(req,res)=>{
+const all = await Location.find();
+try{
+return res.status(201).json(all);
+}catch(error){
+  return res.status(400).json({message: error.message})
+}
+})
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
