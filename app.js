@@ -37,7 +37,7 @@ app.post('/register', async (req, res) => {
     const newUser = new User({ username, email, password });
     console.log(newUser.id);
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully",id:user.id});
+    res.status(201).json({ message: "User registered successfully",id: newUser.id});
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -50,7 +50,7 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ email, password });
     console.log(email);
     if (user) {
-      res.status(200).json({ message: "Login successful",id:user.id});
+      res.status(200).json({ message: "Login successful",id: user.id });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }
@@ -60,13 +60,37 @@ app.post('/login', async (req, res) => {
 });
 app.post('/saveLocation',async(req,res)=>{
   try{
-     const {userId,lat,long,status} = req.body;
+     const {userId,lat,long} = req.body;
+     let {col} = req.body;
      const user = await User.findOne({_id: userId});
+     console.log("user id is " + userId)
     if(!user) {
       res.status(401).json({ message: "Invalid credentials" });
       return ;
     }
-     const loc = new Location({userId,lat,long,status});
+     const uloc = await Location.findOne({userId})
+     console.log('ye'+userId)
+     if(uloc!=null&& uloc.userId){
+      if(lat!=null){
+      uloc.lat = lat ;
+      }
+      if(long!=null){
+      uloc.long = long ;
+      }
+      if(uloc.color==null){
+        uloc.color = 'green';
+      }
+      if(col!=null){
+        uloc.color = col ;
+      }
+      uloc.save();
+      res.status(201).json({ message: "Location updated successfully" });
+      return ;
+     }
+     if(col==null){
+        col = 'green'
+     }
+     const loc = new Location({userId,lat,long,color: col});
      loc.save();
      res.status(201).json({ message: "Location registered successfully" });
   }
@@ -81,35 +105,13 @@ app.post('/getLocation',async(req,res)=>{
      if(!loc){
       res.status(400).json({message: "Invalid UserId"})
      }
-     res.status(201).json({lat: loc.lat , long: loc.long,status: loc.status});
+     res.status(201).json({lat: loc.lat , long: loc.long});
   }
   catch(error){
     res.status(400).json({ message: error.message });
   }
 });
-app.post('/updateLocation', async (req, res) => {
-  try {
-    const { userId, lat, long , status } = req.body;
-    
-    // Check if user exists
-    const user = await User.findOne({ _id: userId });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    
-    // Find the location document for the user
-    let loc = await Location.findOne({ userId});
-    if (!loc) {
-      return res.status(401).json({ message: "Location doesn't exist" });
-    } else {
-      await loc.updateOne({ userId, lat, long , status});
-    }
 
-    return res.status(201).json({ message: "Location updated successfully" });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-});
 
 app.get('/allLocation',async(req,res)=>{
 const all = await Location.find();

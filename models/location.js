@@ -16,7 +16,7 @@ const locationSchema = new mongoose.Schema({
       required: true,
       type: String
     },
-    status: {
+    color: {
       type: String,
     }
   })
