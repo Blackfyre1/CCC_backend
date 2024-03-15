@@ -37,7 +37,7 @@ app.post('/register', async (req, res) => {
     const newUser = new User({ username, email, password });
     console.log(newUser.id);
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully",id:User.id});
+    res.status(201).json({ message: "User registered successfully",id:user.id});
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -50,7 +50,7 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ email, password });
     console.log(email);
     if (user) {
-      res.status(200).json({ message: "Login successful",id:User.id});
+      res.status(200).json({ message: "Login successful",id:user.id});
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }
