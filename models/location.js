@@ -15,6 +15,10 @@ const locationSchema = new mongoose.Schema({
     long: {
       required: true,
       type: String
+    },
+    status: {
+      type: String,
+      required: true
     }
   })
 
