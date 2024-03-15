@@ -61,7 +61,7 @@ app.post('/login', async (req, res) => {
 app.post('/saveLocation',async(req,res)=>{
   try{
      const {userId,lat,long} = req.body;
-     let {col} = req.body;
+     let {color} = req.body;
      const user = await User.findOne({_id: userId});
      console.log("user id is " + userId)
     if(!user) {
@@ -80,17 +80,17 @@ app.post('/saveLocation',async(req,res)=>{
       if(uloc.color==null){
         uloc.color = 'green';
       }
-      if(col!=null){
-        uloc.color = col ;
+      if(color!=null){
+        uloc.color = color ;
       }
       uloc.save();
       res.status(201).json({ message: "Location updated successfully" });
       return ;
      }
-     if(col==null){
-        col = 'green'
+     if(color==null){
+        color = 'green'
      }
-     const loc = new Location({userId,lat,long,color: col});
+     const loc = new Location({userId,lat,long,color: color});
      loc.save();
      res.status(201).json({ message: "Location registered successfully" });
   }
