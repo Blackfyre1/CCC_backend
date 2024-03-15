@@ -18,7 +18,6 @@ const locationSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      required: true
     }
   })
 
