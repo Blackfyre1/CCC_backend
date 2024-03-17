@@ -71,6 +71,10 @@ app.post('/saveLocation',async(req,res)=>{
      const uloc = await Location.findOne({userId})
      console.log('ye'+userId)
      if(uloc!=null&& uloc.userId){
+      if(uloc.color === 'purple' || uloc.color === 'yellow'){
+        res.status(200).json({message: "Assignemnt Received"});
+        return ;
+      }
       if(lat!=null){
       uloc.lat = lat ;
       }
@@ -105,7 +109,7 @@ app.post('/getLocation',async(req,res)=>{
      if(!loc){
       res.status(400).json({message: "Invalid UserId"})
      }
-     res.status(201).json({lat: loc.lat , long: loc.long});
+     res.status(201).json({lat: loc.lat , long: loc.long, color:loc.color});
   }
   catch(error){
     res.status(400).json({ message: error.message });
