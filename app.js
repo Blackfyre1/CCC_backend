@@ -102,6 +102,43 @@ app.post('/saveLocation',async(req,res)=>{
     res.status(400).json({ message: error.message });
   }
 });
+
+app.post('/updateLocation', async (req, res) => {
+  try {
+    const { userId, lat, long, color } = req.body;
+
+    // Check if the user exists
+    const user = await User.findOne({_id: userId});
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Find the location by userId
+    let location = await Location.findOne({ userId });
+
+    if (location) {
+      // Update the existing location if found
+      if (lat) {
+        location.lat = lat;
+      }
+      if (long) {
+        location.long = long;
+      }
+      if (color) {
+        location.color = color;
+      }
+
+      // Save the changes
+      await location.save();
+
+      return res.status(200).json({ message: "Location updated successfully" });
+    } else {
+      return res.status(404).json({ message: "Location not found" });
+    }
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+});
 app.post('/getLocation',async(req,res)=>{
   try{
      const {userId} = req.body;
